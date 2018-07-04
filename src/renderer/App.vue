@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-  <v-app dark>
+  <v-app >
     <v-navigation-drawer
       fixed
       v-model="drawer"
@@ -38,14 +38,10 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <v-content>
-      <v-container fluid fill-height>
-        <v-layout justify-center align-center>
-          <v-flex shrink>
-            <router-view></router-view>
-          </v-flex>
-        </v-layout>
-      </v-container>
+    <v-content >
+    <v-slide-y-transition>
+      <router-view></router-view>
+    </v-slide-y-transition>
     </v-content>
     <v-footer app fixed>
       <span>&copy; 2017</span>
