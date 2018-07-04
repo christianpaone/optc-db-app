@@ -26,19 +26,4 @@
       ]
     })
   }
-  async function download() {
-    var https = require('https');
-    var fs   = require('fs');
-    var app  = require('electron').remote
-    var files_names = ["units.js","details.js","units.js","cooldowns.js"]
-
-    files_names.forEach(file_name => {
-        var file = fs.createWriteStream("src/renderer/components/js/"+file_name);
-      https.get("https://raw.githubusercontent.com/optc-db/optc-db.github.io/master/common/data/"+file_name, function(response) {
-        response.pipe(file);
-      });
-    });
-  }
-
-  download();
 </script>

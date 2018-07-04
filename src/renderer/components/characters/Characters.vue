@@ -20,18 +20,9 @@
       class="elevation-4"
       >
       <template slot="items" slot-scope="props">
-        <tr @click.stop="
-        setDetails(
-          props.item.id,
-          props.item.name,
-          props.item.type,
-          props.item.class,
-          props.item.hp,
-          props.item.atk,
-          props.item.rcv,
-          props.item.cost)">
+        <tr @click.stop="selected_details=getUnitDetails(props.item.id)">
           <td>{{ props.item.id }}</td>
-          <td><img :src=props.item.image></td>
+          <td><v-avatar size="70px" tile="true"><img :src=props.item.image></v-avatar></td>
           <td><h3>{{props.item.name }}</h3></td>
           <td>{{ props.item.type }}</td>
           <td>{{ props.item.class }}</td>
@@ -47,23 +38,48 @@
         <v-pagination v-model="pagination.page" :length="pages" :total-visible="10"></v-pagination>
       </div>
        <v-dialog
-      v-model="dialog"
-      max-width="800px"
-    >
+        v-model="dialog"
+        max-width="800px" fullscreen hide-overlay transition="dialog-bottom-transition"
+        >
       <v-card>
-        <v-card-title class="headline white--text info">{{selected_details.name}}</v-card-title>
+        <v-toolbar dark class="white--text primary" >
+          <v-btn icon dark @click.native="dialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{selected_details.name}}</v-toolbar-title>
+        </v-toolbar>
         <v-card-text>
-          <v-flex row text-xs-center>
-            <img :src=selected_details.image width="350px" height="300px">
-          </v-flex>
-          <v-flex row>
-           Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
-          Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
-          Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
-          Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
-          Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
-          Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
-          </v-flex>
+          <div>
+            <v-flex text-xs-center>
+              <img :src=selected_details.image width="350px" height="300px">
+            </v-flex>
+            <v-flex text-xs-center text-sm-center text-md-left text-lg-left><h1>Details</h1></v-flex>
+            <v-divider></v-divider>
+            <v-flex row>
+              <v-list three-line subheader>
+                  <v-list-tile avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title><h2>Class</h2></v-list-tile-title>
+                      <v-list-tile-sub-title><h3>{{selected_details.class}}</h3></v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-content>
+                      <v-list-tile-title><h2>Type</h2></v-list-tile-title>
+                      <v-list-tile-sub-title><h3>{{selected_details.type}}</h3></v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-content>
+                      <v-list-tile-title><h2>Stars</h2></v-list-tile-title>
+                      <v-list-tile-sub-title><h3>{{selected_details.stars}}</h3></v-list-tile-sub-title>
+                    </v-list-tile-content>                    
+                    <v-list-tile-content>
+                      <v-list-tile-title><h2>Cost</h2></v-list-tile-title>
+                      <v-list-tile-sub-title><h3>{{selected_details.cost}}</h3></v-list-tile-sub-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile avatar>
+                  </v-list-tile>
+                </v-list>
+            </v-flex>
+          </div>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -72,40 +88,26 @@
 </template>
 
 <script>
-  var units  = require( './../js/units.js')
-  var details  = require( './../js/details.js')
-  var cooldowns  = require( './../js/cooldowns.js')
-
+  import UnitsModule from './../../assets/js/UnitsModule'
   export default {
     data: function() {
       return {
           dialog: false,
-          selected_details:{
-            image: '',
-            id: '',
-            type: '',
-            clas: '',
-            hp: '',
-            atk: '',
-            rcv: '',
-            cost: '',
-            slots: '',
-            stars: ''
-          },
+          selected_details:'',
           pagination: {
             rowsPerPage: 10
           },
           selected: [],
           search: '',
-          unit_list: this.getUnitTable(),
-          unit_details: details,
+          unit_list: UnitsModule.getUnits(),
           headers: [
               {
                 text: 'ID',
                 value: 'id'
               },
               {
-                text:''
+                text:'',
+                value:'image'
               },
               {
                 text: 'Name',
@@ -132,65 +134,29 @@
       }
     },
     methods : {
-      setDetails:function(id,name,type,clas, hp,atk,rcv,cost,slots,stars){
-        this.selected_details.id=parseInt(id)
-        this.selected_details.image="https://onepiece-treasurecruise.com/wp-content/uploads/c"+id+".png"
-        this.selected_details.name = name
-        this.selected_details.type = type
-        this.selected_details.clas = clas
-        this.selected_details.hp = hp
-        this.selected_details.atk = atk
-        this.selected_details.rcv = rcv
-        this.selected_details.cost = cost
-        this.selected_details.slots = slots
-        this.selected_details.stars = stars
+      getUnitDetails:function(id){
         this.dialog = !this.dialog
-      },
-      getUnitTable:function(){
-        // [ "Name", "Type", [ "Class1", "Class2" ], Stars, Cost, Combo, Sockets, maxLVL, EXPToMax, lvl1HP, lvl1ATK, lvl1RCV, MAXHP, MAXATK, MAXRCV, Growth Rate ],
-        let json = []
-        let i = 1;
-        window.units.forEach(element => {
-          if(element[0] != "" && i < 5000){
-            var str = "" + i++
-            var pad = "0000"
-            var ans = pad.substring(0, pad.length - str.length) + str
-            let unit_table = {}
-            unit_table["id"] = ans
-            unit_table["name"] = element[0]
-            let typ = element[1]
-            unit_table["type"] = Array.isArray(typ) ? typ[0]+"/"+typ[1] : typ
-            let cl = element[2]
-            unit_table["class"]=  Array.isArray(cl) ? cl[0] +"/"+cl[1] : cl 
-            unit_table["hp"] = element[12]
-            unit_table["atk"] =  element[13]
-            unit_table["rcv"] =  element[14]
-            unit_table["cost"] =  element[4] 
-            unit_table["slots"] = element[6]
-            unit_table["stars"] =  element[3] 
-            unit_table["image"] = "https://onepiece-treasurecruise.com/wp-content/uploads/f"+ans+".png"
-            json.push(unit_table)
-          }else{
-            i++;
-          }
-        });
-        return json
+        return UnitsModule.getUnitDetails(id)
       }
     } 
   }
-  async function download() {
-    var https = require('https');
-    var fs   = require('fs');
-    var app  = require('electron').remote
-    var files_names = ["units.js","details.js","units.js","cooldowns.js"]
 
-    files_names.forEach(file_name => {
-        var file = fs.createWriteStream("src/renderer/components/js/"+file_name);
-      https.get("https://raw.githubusercontent.com/optc-db/optc-db.github.io/master/common/data/"+file_name, function(response) {
-        response.pipe(file);
-      });
-    });
-  }
 
 
 </script>
+
+<style scoped>
+  .STR   { background: salmon; }
+.QCK   { background: lightskyblue; }
+.DEX   { background: lightgreen; }
+.PSY   { background: gold; }
+.INT   { background: orchid; }
+.RCV   { background: darkgoldenrod; }
+.TND   { background: peru; }
+.BLOCK { background: darkslateblue; }
+.BOMB  { background: maroon; }
+.RAINBOW { background: linear-gradient(90deg,#fa8072,#ffd700,#90ee90,#87cefa, #da70d6); }
+.G     { background: orange; }
+.EMPTY { background: #777; }
+
+</style>

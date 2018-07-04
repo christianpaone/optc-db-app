@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-  <v-app >
+  <v-app :dark="darkMode" >
     <v-navigation-drawer
       fixed
       v-model="drawer"
@@ -36,6 +36,11 @@
         <v-icon left>home</v-icon>
         Home
         </v-btn>
+        <v-btn
+          flat
+          @click.native.stop="darkMode = !darkMode">
+          <v-icon>wb_sunny</v-icon>
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-content >
@@ -62,12 +67,13 @@
       right: true,
       rightDrawer: false,
       title: 'OPTC-DB App',
-      homeRoute: '/'
+      homeRoute: '/',
+      darkMode: true
     })
   }
 </script>
 
 <style>
   @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
-  /* Global CSS */
+
 </style>
