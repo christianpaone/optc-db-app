@@ -25,6 +25,7 @@ export default class UnitsModule {
                 unit_table["slots"] = element[6]
                 unit_table["stars"] =  element[3] 
                 unit_table["image"] = "https://onepiece-treasurecruise.com/wp-content/uploads/f"+ans+".png"
+                unit_table["image_full"] = "https://onepiece-treasurecruise.com/wp-content/uploads/c"+ans+".png"
                 json.push(unit_table)
               }else{
                 i++;

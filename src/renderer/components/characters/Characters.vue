@@ -13,29 +13,93 @@
         />
       <v-data-table
       :headers="headers"
-      :items="unit_list"
+      :items="Units"
       :search="search"
       :pagination.sync="pagination"
       hide-actions
-      class="elevation-4"
+      class="elevation-4 hidden-md-and-down"
       >
       <template slot="items" slot-scope="props">
         <tr @click.stop="selected_details=getUnitDetails(props.item.id)">
           <td>{{ props.item.id }}</td>
-          <td><v-avatar size="70px" tile="true"><img :src=props.item.image></v-avatar></td>
+          <td><v-avatar size="70px" tile><img :src=props.item.image></v-avatar></td>
           <td><h3>{{props.item.name }}</h3></td>
-          <td>{{ props.item.type }}</td>
-          <td>{{ props.item.class }}</td>
-          <td>{{ props.item.hp }}</td>
-          <td>{{ props.item.atk }}</td>
-          <td>{{ props.item.rcv }}</td>
-          <td>{{ props.item.cost }}</td>
-          <td>{{ props.item.stars }}</td>
+          <td><b>{{ props.item.type }}</b></td>
+          <td><b>{{ props.item.class }}</b></td>
+          <td><b>{{ props.item.hp }}</b></td>
+          <td><b>{{ props.item.atk }}</b></td>
+          <td><b>{{ props.item.rcv }}</b></td>
+          <td><b>{{ props.item.cost }}</b></td>
+          <td><b>{{ props.item.stars }}</b></td>
         </tr>
       </template>
-      </v-data-table>
+    </v-data-table>
+    <v-data-table
+      :headers="headersMini"
+      :items="Units"
+      :search="search"
+      :pagination.sync="pagination"
+      hide-actions
+      disable-initial-sort
+      class="elevation-4 hidden-lg-and-up" 
+      >
+      <template slot="items" slot-scope="props">
+        <tr @click.stop="selected_details=getUnitDetails(props.item.id)" >
+              <v-flex xs12>
+                <v-card>
+                  <v-container fluid grid-list-lg>
+                    <v-layout row>
+                      <v-flex xs4>
+                        <v-card-media
+                          :src="props.item.image"
+                          height="150px"
+                          contain
+                        ></v-card-media>
+                      </v-flex>
+                      <v-flex xs8>
+                        <div>
+                          <div class="headline">{{props.item.name}}</div>
+                          <v-divider></v-divider>
+                          <div>
+                            <v-spacer></v-spacer>
+                            <v-layout row>
+                              <v-flex xs4>
+                                <h2>HP</h2>
+                              </v-flex>
+                              <v-flex xs8>
+                                <h2>{{props.item.hp}}</h2>
+                              </v-flex>
+                            </v-layout>
+                            <v-divider></v-divider>
+                            <v-layout row>
+                              <v-flex xs4>
+                                <h2>ATK</h2>
+                              </v-flex>
+                              <v-flex xs8>
+                                <h2>{{props.item.atk}}</h2>
+                              </v-flex>
+                            </v-layout>
+                            <v-divider></v-divider>
+                            <v-layout row>
+                              <v-flex xs4>
+                                <h2>RCV</h2>
+                              </v-flex>
+                              <v-flex xs8>
+                                <h2>{{props.item.rcv}}</h2>
+                              </v-flex>
+                            </v-layout>
+                          </div>
+                        </div>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card>
+              </v-flex>
+          </tr>
+      </template>
+    </v-data-table>
       <div class="text-xs-center pt-2">
-        <v-pagination v-model="pagination.page" :length="pages" :total-visible="10"></v-pagination>
+        <v-pagination v-model="pagination.page" :length="pages" :total-visible="8"></v-pagination>
       </div>
        <v-dialog
         v-model="dialog"
@@ -88,18 +152,28 @@
 </template>
 
 <script>
-  import UnitsModule from './../../assets/js/UnitsModule'
   export default {
+    mounted:function(){
+      this.activateDrawer();
+      this.$store.commit('LOAD_UNITS');
+    },
     data: function() {
       return {
           dialog: false,
           selected_details:'',
           pagination: {
-            rowsPerPage: 10
+            rowsPerPage: 10,
+            page:1
           },
-          selected: [],
           search: '',
-          unit_list: UnitsModule.getUnits(),
+          selected:[],
+          headersMini: [
+              {
+                text: 'Character',
+                align: 'center',
+                value: 'name'          
+              }
+          ],
           headers: [
               {
                 text: 'ID',
@@ -107,7 +181,7 @@
               },
               {
                 text:'',
-                value:'image'
+                value:'image',
               },
               {
                 text: 'Name',
@@ -125,38 +199,32 @@
         }
       } ,
     computed: {
+      Units(){
+          return this.$store.getters.getUnits
+      },
       pages () {
-        if (this.pagination.rowsPerPage == null ||
-          this.pagination.totalItems == null
-        ) return 0
-
-        return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
+        if (this.pagination.rowsPerPage == null || this.pagination.totalItems == null ) 
+          return 0
+        return Math.ceil((this.Units.length) / this.pagination.rowsPerPage)
+      },
+      limitedItems(){
+        return this.unit_list.slice((this.pagination.page-1) * this.pagination.rowsPerPage,this.pagination.page * this.pagination.rowsPerPage )
       }
     },
     methods : {
       getUnitDetails:function(id){
         this.dialog = !this.dialog
         return UnitsModule.getUnitDetails(id)
+      },
+      activateDrawer:function(){  
+        this.$store.commit('SET_BLOCK_DRAWER',false)
+        this.$store.commit('SET_CHARACTER_DRAWER',true)
       }
-    } 
+    },
   }
-
-
-
 </script>
 
 <style scoped>
-  .STR   { background: salmon; }
-.QCK   { background: lightskyblue; }
-.DEX   { background: lightgreen; }
-.PSY   { background: gold; }
-.INT   { background: orchid; }
-.RCV   { background: darkgoldenrod; }
-.TND   { background: peru; }
-.BLOCK { background: darkslateblue; }
-.BOMB  { background: maroon; }
-.RAINBOW { background: linear-gradient(90deg,#fa8072,#ffd700,#90ee90,#87cefa, #da70d6); }
-.G     { background: orange; }
-.EMPTY { background: #777; }
-
+  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
+  @import url("./../../assets/css/custom.css");
 </style>

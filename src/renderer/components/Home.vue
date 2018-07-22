@@ -1,6 +1,6 @@
 <template>
   <v-container>
-  <v-flex xs4 offset-xs4>
+  <v-flex xs10 offset-xs1 sm8 offset-sm2 md6 offset-md3 lg4 offset-lg4>
     <v-btn 
       router 
       :to="section.to"
@@ -16,6 +16,9 @@
 </template>
 <script>
   export default {
+    mounted:function(){
+      this.$store.commit('SET_BLOCK_DRAWER',true)
+    },
     data:() => ({
       sections:[
         { style: { backgroundColor: 'green', width: '100%' }, title: 'Character Table', to: '/characters' },
@@ -27,3 +30,7 @@
     })
   }
 </script>
+<style scoped>
+  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
+  @import url("./../assets/css/custom.css");
+</style>

@@ -92,13 +92,6 @@ body {
 .pink:hover   { background-color: #A57777; }
 .brown:hover   { background-color: #662200; }
 
-.overlay {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: table;
-    z-index: 100;
-}
 
 .hide {
     position: fixed;
@@ -128,7 +121,6 @@ body {
     background-size: 40px 40px;
     margin: 1px;
 }
-
 .STR   { background: salmon; }
 .QCK   { background: lightskyblue; }
 .DEX   { background: lightgreen; }
@@ -141,6 +133,50 @@ body {
 .RAINBOW { background: linear-gradient(90deg,#fa8072,#ffd700,#90ee90,#87cefa, #da70d6); }
 .G     { background: orange; }
 .EMPTY { background: #777; }
+
+.filter{
+  padding: 0px 0;
+  height: 3em;
+  text-align: center;
+  cursor: pointer;
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+}
+
+
+.width-4{
+    width: 33.3%;
+    display: inline-block;
+}
+.width-6{
+    width: 50%;
+    display: inline-block;
+}
+
+.filter:not(.active):not(:hover){
+  opacity: 0.3;
+}
+
+.active {
+  border: 1px solid #aaa;
+}
+
+.filterHeader{
+  text-align: center;
+  background: rgb(73, 73, 73);
+  color: white;
+  font-weight: bold;
+  cursor: default;
+  border-top: 1px solid #aaa; 
+}
+.nomargin{
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+.clearFilters{
+  background: #ff6358; 
+  color: white;
+}
 
 .block-icon:before {
     font-style: normal;

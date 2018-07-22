@@ -1,44 +1,28 @@
 <template>
 <div id="app">
-  <v-app :dark="darkMode" >
-    <v-navigation-drawer
-      fixed
+  <v-app :dark="theme">
+    <v-navigation-drawer 
       v-model="drawer"
+      v-show="characterDrawer"
+      fixed
+      temporary
       app>
-      <v-list>
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon>dashboard</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Dashboard</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon>settings</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Settings</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
+        <CharacterFilters></CharacterFilters>
+      </v-navigation-drawer>
     <v-toolbar app>
-      <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="drawer=!drawer" v-show="!blockDrawer"></v-toolbar-side-icon>
       <v-toolbar-title>OPTC-DB App</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn 
           flat
-          router 
-          :to="homeRoute">
+          router-link :to="homeRoute">
         <v-icon left>home</v-icon>
         Home
         </v-btn>
         <v-btn
           flat
-          @click.native.stop="darkMode = !darkMode">
+          @click.native="changeTheme">
           <v-icon>wb_sunny</v-icon>
         </v-btn>
       </v-toolbar-items>
@@ -56,24 +40,41 @@
 </template>
 
 <script>
+  import CharacterDrawer from './components/CharacterDrawer.vue'
+
   export default {
     name: 'optc-db-app',
-    data: () => ({
-      drawer: true,
-      items: [
-        { icon: 'apps', title: 'Welcome', to: '/' },
-        { icon: 'bubble_chart', title: 'Inspire', to: '/inspire' }
-      ],
-      right: true,
-      rightDrawer: false,
-      title: 'OPTC-DB App',
-      homeRoute: '/',
-      darkMode: true
-    })
+    components:{
+      "CharacterFilters":CharacterDrawer
+    },
+    data: function() {
+      return {
+        title: 'OPTC-DB App',
+        homeRoute: '/',
+        drawer: false
+      }
+    },
+    computed:{
+      theme(){
+        return this.$store.getters.getTheme;
+      },
+      blockDrawer(){
+        return this.$store.getters.getBlockDrawer;
+      },
+      characterDrawer(){
+        return this.$store.getters.getCharacterDrawer;
+      }
+    },
+    methods:{
+      changeTheme:function(){
+        this.$store.commit('CHANGE_THEME_MODE')
+      },
+      toggleDrawer:function(){
+        this.$store.commit('TOGGLE_DRAWER')
+      }
+    }
   }
 </script>
-
-<style>
+<style scoped>
   @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
-
 </style>
