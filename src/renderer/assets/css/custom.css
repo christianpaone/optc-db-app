@@ -157,9 +157,6 @@ body {
   opacity: 0.3;
 }
 
-.active {
-  border: 1px solid #aaa;
-}
 
 .filterHeader{
   text-align: center;

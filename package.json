@@ -52,6 +52,7 @@
     }
   },
   "dependencies": {
+    "eslint": "^5.2.0",
     "vue": "^2.4.2",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",

@@ -31,66 +31,114 @@
                :class="item.width"
                @click="setClassFilter(i)"
             >
-                <v-list-tile class="filter classType" v-bind:class="item.filter+' '+item.active">    
+                <v-list-tile class="filter" v-bind:class="item.filter+' '+item.active">    
                 <v-list-tile-content>
                   <v-list-tile-title class="text-xs-center" v-text="item.filter"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile> 
             </v-flex>
-            <vue-stars 
-              name="demo" 
-              active-color="#ffdd00" 
-              inactive-color="#999999" 
-              shadow-color="#ffff00" 
-              hover-color="#dddd00" 
-              :max="5" :value="3" 
-              :readonly="true" 
-              :char="★" 
-              :inactive-char="" 
-              :class="" />
+            <v-divider></v-divider>
+            <v-list-tile class="filterHeader" >
+              <v-list-tile-title class="text-xs-center">Stars Filters</v-list-tile-title>
+            </v-list-tile>
+            <v-flex
+               v-for="(item,i) in Stars"
+               :key="i+'-stars'"
+               :class="item.width"
+               @click="setStarsFilter(i)"
+            >
+            <v-list-tile class="filter" v-bind:class="item.active">    
+                <v-list-tile-content>
+                  <v-list-tile-title class="text-xs-center">
+                    <vue-stars 
+                      v-show="item.filter !== '5+' && item.filter !== '6+'"
+                      :name="'stars-'+item.filter" 
+                      active-color="#ffdd00" 
+                      inactive-color="#999999" 
+                      shadow-color="#ffff00" 
+                      hover-color="#dddd00" 
+                      :value="item.value"
+                      :max=6
+                      readonly
+                      char="★" 
+                      inactive-char="" 
+                      class="" />
+                    <vue-stars 
+                      v-if="item.filter === '5+' || item.filter === '6+'"
+                      :name="'stars-'+item.filter" 
+                      active-color="#ffdd00" 
+                      inactive-color="#999999" 
+                      shadow-color="#ffff00" 
+                      hover-color="#dddd00" 
+                      :value="item.value"
+                      :max="item.value+1"
+                      readonly
+                      char="★" 
+                      inactive-char="+" 
+                      class="" />
+                  </v-list-tile-title>
+                </v-list-tile-content>
+            </v-list-tile> 
+            </v-flex>
       </v-list>
 </template>
 
 
 <script>
+import vuestars from "vue-stars";
+
 export default {
-    data:function(){
-      return{
-        name:'CharacterDrawer'
+  components: {
+    "vue-stars": vuestars
+  },
+  data: function() {
+    return {
+      name: "CharacterDrawer"
+    };
+  },
+  computed: {
+    Types: {
+      get() {
+        return this.$store.getters.getCharacterFilter.types;
+      },
+      set(i) {
+        this.$store.commit("ACTIVE_FILTER", { filter: "type", index: i });
       }
     },
-    computed:{
-      Types:{
-        get(){
-          return this.$store.getters.getCharacterFilter.types;
-        },
-        set(i){
-          this.$store.commit('ACTIVE_FILTER', {filter:"type",index:i});
-        }
+    Classes: {
+      get() {
+        return this.$store.getters.getCharacterFilter.classes;
       },
-      Classes:{
-        get(){
-          return this.$store.getters.getCharacterFilter.classes;
-        },
-        set(i){
-          this.$store.commit('ACTIVE_FILTER', {filter:"class",index:i});
-        }
+      set(i) {
+        this.$store.commit("ACTIVE_FILTER", { filter: "class", index: i });
       }
     },
-    methods:{
-      clearFilters:function(){
-        this.$store.commit('CLEAR_FILTERS');
-      },    
-      setTypeFilter:function(i){
-        this.Types = i;
+    Stars: {
+      get() {
+        return this.$store.getters.getCharacterFilter.stars;
       },
-      setClassFilter:function(i){
-        this.Classes = i;
+      set(i) {
+        this.$store.commit("ACTIVE_FILTER", { filter: "stars", index: i });
       }
     }
-}
+  },
+  methods: {
+    clearFilters: function() {
+      this.$store.commit("CLEAR_FILTERS");
+    },
+    setTypeFilter: function(i) {
+      this.Types = i;
+    },
+    setClassFilter: function(i) {
+      this.Classes = i;
+    },
+    setStarsFilter: function(i) {
+      this.Stars = i;
+    }
+  }
+};
 </script>
 <style scoped>
-  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
-  @import url("./../assets/css/custom.css");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons");
+@import url("./../assets/css/custom.css");
 </style>

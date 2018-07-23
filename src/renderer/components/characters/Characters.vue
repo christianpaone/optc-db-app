@@ -152,79 +152,85 @@
 </template>
 
 <script>
-  export default {
-    mounted:function(){
-      this.activateDrawer();
-      this.$store.commit('LOAD_UNITS');
-    },
-    data: function() {
-      return {
-          dialog: false,
-          selected_details:'',
-          pagination: {
-            rowsPerPage: 10,
-            page:1
-          },
-          search: '',
-          selected:[],
-          headersMini: [
-              {
-                text: 'Character',
-                align: 'center',
-                value: 'name'          
-              }
-          ],
-          headers: [
-              {
-                text: 'ID',
-                value: 'id'
-              },
-              {
-                text:'',
-                value:'image',
-              },
-              {
-                text: 'Name',
-                align: 'left',
-                value: 'name'          
-              },
-              { text: 'Type', value: 'type'},
-              { text: 'Class', value: 'class' },
-              { text: 'HP', value: 'hp' },
-              { text: 'ATK', value: 'atk' },
-              { text: 'RCV', value: 'rcv' },
-              { text: 'Cost', value: 'cost' },  
-              { text: 'Stars', value: 'stars' }
-            ],
+export default {
+  mounted: function() {
+    this.activateDrawer();
+    this.$store.commit("LOAD_UNITS");
+  },
+  data: function() {
+    return {
+      dialog: false,
+      selected_details: "",
+      pagination: {
+        rowsPerPage: 10,
+        page: 1
+      },
+      search: "",
+      selected: [],
+      headersMini: [
+        {
+          text: "Character",
+          align: "center",
+          value: "name"
         }
-      } ,
-    computed: {
-      Units(){
-          return this.$store.getters.getUnits
-      },
-      pages () {
-        if (this.pagination.rowsPerPage == null || this.pagination.totalItems == null ) 
-          return 0
-        return Math.ceil((this.Units.length) / this.pagination.rowsPerPage)
-      },
-      limitedItems(){
-        return this.unit_list.slice((this.pagination.page-1) * this.pagination.rowsPerPage,this.pagination.page * this.pagination.rowsPerPage )
-      }
+      ],
+      headers: [
+        {
+          text: "ID",
+          value: "id"
+        },
+        {
+          text: "",
+          value: "image"
+        },
+        {
+          text: "Name",
+          align: "left",
+          value: "name"
+        },
+        { text: "Type", value: "type" },
+        { text: "Class", value: "class" },
+        { text: "HP", value: "hp" },
+        { text: "ATK", value: "atk" },
+        { text: "RCV", value: "rcv" },
+        { text: "Cost", value: "cost" },
+        { text: "Stars", value: "stars" }
+      ]
+    };
+  },
+  computed: {
+    Units() {
+      return this.$store.getters.getUnits;
     },
-    methods : {
-      getUnitDetails:function(id){
-        this.dialog = !this.dialog
-        return UnitsModule.getUnitDetails(id)
-      },
-      activateDrawer:function(){  
-        this.$store.commit('SET_BLOCK_DRAWER',false)
-        this.$store.commit('SET_CHARACTER_DRAWER',true)
-      }
+    pages() {
+      if (
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
+      )
+        return 0;
+      return Math.ceil(this.Units.length / this.pagination.rowsPerPage);
     },
+    limitedItems() {
+      return this.unit_list.slice(
+        (this.pagination.page - 1) * this.pagination.rowsPerPage,
+        this.pagination.page * this.pagination.rowsPerPage
+      );
+    }
+  },
+  methods: {
+    getUnitDetails: function(id) {
+      this.dialog = !this.dialog;
+      return UnitsModule.getUnitDetails(id);
+    },
+    activateDrawer: function() {
+      this.$store.commit("SET_BLOCK_DRAWER", false);
+      this.$store.commit("SET_CHARACTER_DRAWER", true);
+    }
   }
+};
 </script>
 
 <style scoped>
-  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
-  @import url("./../../assets/css/custom.css");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons");
+@import url("./../../assets/css/custom.css");
 </style>

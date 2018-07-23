@@ -102,18 +102,56 @@ var _ = require('underscore')._
             {
                 selected:false, 
                 filter:'1',
+                value:1,
                 width:'width-6',
                 active:''
             },
             {
                 selected:false, 
-                filter:'1',
+                filter:'2',
+                value:2,
                 width:'width-6',
                 active:''
             },
             {
                 selected:false, 
-                filter:'1',
+                filter:'3',
+                value:3,
+                width:'width-6',
+                active:''
+            },
+                {
+                selected:false, 
+                filter:'4',
+                value:4,
+                width:'width-6',
+                active:''
+            },
+            {
+                selected:false, 
+                filter:'5',
+                value:5,
+                width:'width-6',
+                active:''
+            },            
+            {
+                selected:false, 
+                filter:'6',
+                value:6,
+                width:'width-6',
+                active:''
+            },
+            {
+                selected:false, 
+                filter:'5+',
+                value:5,
+                width:'width-6',
+                active:''
+            },
+            {
+                selected:false, 
+                filter:'6+',
+                value:6,
                 width:'width-6',
                 active:''
             }
@@ -138,6 +176,9 @@ var _ = require('underscore')._
         }else if ( payload.filter === "class"){
             state.character_filters.classes[payload.index].selected = !state.character_filters.classes[payload.index].selected;
             state.character_filters.classes[payload.index].active = state.character_filters.classes[payload.index].active ==='' ? 'active':'';
+        }else if ( payload.filter === "stars"){
+            state.character_filters.stars[payload.index].selected = !state.character_filters.stars[payload.index].selected;
+            state.character_filters.stars[payload.index].active = state.character_filters.stars[payload.index].active ==='' ? 'active':'';
         }
         //Filter throught units
         this.commit('LOAD_UNITS')
@@ -162,6 +203,12 @@ var _ = require('underscore')._
                                 }else{
                                     filtered = filtered && filter[key][i].filter === unit["class"];
                                 }
+                                break;
+                            case "stars":
+                                if ( isNaN(unit["stars"]) ) 
+                                    filtered = filtered && filter[key][i].filter === unit["stars"];
+                                else 
+                                    filtered = filtered && filter[key][i].value === unit["stars"];
                                 break;
                         }
                     }
