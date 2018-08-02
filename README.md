@@ -1,2 +1,2 @@
 # optc-db-app
-App version of OPTC-DB
+Desktop App version of OPTC-DB
